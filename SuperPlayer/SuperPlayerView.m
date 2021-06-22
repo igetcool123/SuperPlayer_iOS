@@ -502,7 +502,7 @@ static UISlider * _volumeSlider;
         [[UIApplication sharedApplication].keyWindow addSubview:self];
         [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (IsIPhoneX) {
-                make.width.equalTo(@(ScreenWidth - self.mm_safeAreaTopGap * 2));
+                make.width.equalTo(@(ScreenWidth - self.mm_safeAreaLeftGap * 2));
             } else {
                 make.width.equalTo(@(ScreenWidth));
             }
@@ -538,7 +538,7 @@ static UISlider * _volumeSlider;
             [[UIApplication sharedApplication].keyWindow addSubview:self];
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - self.mm_safeAreaTopGap * 2));
+                    make.width.equalTo(@(ScreenWidth - self.mm_safeAreaLeftGap * 2));
                 } else {
                     make.width.equalTo(@(ScreenWidth));
                 }
