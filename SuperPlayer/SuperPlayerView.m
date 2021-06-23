@@ -480,7 +480,55 @@ static UISlider * _volumeSlider;
     }
     return targetOrientation;
 }
+//寻找最顶部视图
+- (UIViewController *)findTopViewController {
+    
+    UIViewController *result =nil;
 
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+
+    if(window.windowLevel != UIWindowLevelNormal) {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows) {
+            
+            if(tmpWin.windowLevel == UIWindowLevelNormal) {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+
+    UIViewController *rootVC = window.rootViewController;
+    id nextResponder = [rootVC.view nextResponder];
+
+    if([nextResponder isKindOfClass:[UINavigationController class]]) {
+        result = ((UINavigationController*)nextResponder).topViewController;
+
+        if([result isKindOfClass:[UITabBarController class]]) {
+            result = ((UITabBarController *)result).selectedViewController;
+        }
+        
+    }else if([nextResponder isKindOfClass:[UITabBarController class]]) {
+        result = ((UITabBarController*)nextResponder).selectedViewController;
+        if([result isKindOfClass:[UINavigationController class]]) {
+            result = ((UINavigationController *)result).topViewController;
+        }
+    }else if([nextResponder isKindOfClass:[UIViewController class]]) {
+        result = nextResponder;
+    }else{
+        result = window.rootViewController;
+        
+        if([result isKindOfClass:[UINavigationController class]]) {
+            result = ((UINavigationController *)result).topViewController;
+            if([result isKindOfClass:[UITabBarController class]]) {
+                result = ((UITabBarController *)result).selectedViewController;
+            }
+        }else if([result isKindOfClass:[UIViewController class]]) {
+            result = nextResponder;
+        }
+    }
+    return  result;
+}
 - (void)_switchToFullScreen:(BOOL)fullScreen {
     if (_isFullScreen == fullScreen) {
         return;
@@ -492,22 +540,23 @@ static UISlider * _volumeSlider;
 
     if (fullScreen) {
         [self removeFromSuperview];
-        [[UIApplication sharedApplication].keyWindow addSubview:_fullScreenBlackView];
+        
+        [[self findTopViewController].view addSubview:_fullScreenBlackView];
         [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(@(ScreenWidth));
             make.height.equalTo(@(ScreenHeight));
-            make.center.equalTo([UIApplication sharedApplication].keyWindow);
+            make.center.equalTo([self findTopViewController].view);
         }];
 
-        [[UIApplication sharedApplication].keyWindow addSubview:self];
+        [[self findTopViewController].view addSubview:self];
         [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (IsIPhoneX) {
-                make.width.equalTo(@(ScreenWidth - self.mm_safeAreaLeftGap * 2));
+                make.width.equalTo(@(ScreenWidth - 34 * 2));
             } else {
                 make.width.equalTo(@(ScreenWidth));
             }
             make.height.equalTo(@(ScreenHeight));
-            make.center.equalTo([UIApplication sharedApplication].keyWindow);
+            make.center.equalTo([self findTopViewController].view);
         }];
         [self.superview setNeedsLayout];
     } else {
@@ -528,22 +577,24 @@ static UISlider * _volumeSlider;
         // 这个地方加判断是为了从全屏的一侧,直接到全屏的另一侧不用修改限制,否则会出错;
         if (_layoutStyle != SuperPlayerLayoutStyleFullScreen)  { //UIInterfaceOrientationIsPortrait(currentOrientation)) {
             [self removeFromSuperview];
-            [[UIApplication sharedApplication].keyWindow addSubview:_fullScreenBlackView];
+            NSLog(@"%@",[self findTopViewController]);
+
+            [[self findTopViewController].view addSubview:_fullScreenBlackView];
             [_fullScreenBlackView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.width.equalTo(@(ScreenWidth));
                 make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([UIApplication sharedApplication].keyWindow);
+                make.center.equalTo([self findTopViewController].view);
             }];
 
-            [[UIApplication sharedApplication].keyWindow addSubview:self];
+            [[self findTopViewController].view addSubview:self];
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - self.mm_safeAreaLeftGap * 2));
+                    make.width.equalTo(@(ScreenWidth - 34 * 2));
                 } else {
                     make.width.equalTo(@(ScreenWidth));
                 }
                 make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([UIApplication sharedApplication].keyWindow);
+                make.center.equalTo([self findTopViewController].view);
             }];
         }
     } else {
@@ -551,7 +602,7 @@ static UISlider * _volumeSlider;
     }
     self.controlView.compact = style == SuperPlayerLayoutStyleCompact;
 
-    [[UIApplication sharedApplication].keyWindow  layoutIfNeeded];
+    [[self findTopViewController].view  layoutIfNeeded];
 
 
     // iOS6.0之后,设置状态条的方法能使用的前提是shouldAutorotate为NO,也就是说这个视图控制器内,旋转要关掉;
@@ -1065,7 +1116,7 @@ static UISlider * _volumeSlider;
     return YES;
 }
 
-#pragma mark - Setter 
+#pragma mark - Setter
 
 
 /**
