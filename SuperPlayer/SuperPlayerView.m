@@ -551,7 +551,7 @@ static UISlider * _volumeSlider;
         [[self findTopViewController].view addSubview:self];
         [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (IsIPhoneX) {
-                make.width.equalTo(@(ScreenWidth - 34 * 2));
+                make.width.equalTo(@(ScreenWidth - 95));
             } else {
                 make.width.equalTo(@(ScreenWidth));
             }
@@ -589,7 +589,7 @@ static UISlider * _volumeSlider;
             [[self findTopViewController].view addSubview:self];
             [self mas_remakeConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - 34 * 2));
+                    make.width.equalTo(@(ScreenWidth - 95));
                 } else {
                     make.width.equalTo(@(ScreenWidth));
                 }
