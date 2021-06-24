@@ -580,14 +580,14 @@ static UISlider * _volumeSlider;
             NSLog(@"%@",[self findTopViewController]);
 
             [[self findTopViewController].view addSubview:_fullScreenBlackView];
-            [_fullScreenBlackView mas_updateConstraints:^(MASConstraintMaker *make) {
+            [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.width.equalTo(@(ScreenWidth));
                 make.height.equalTo(@(ScreenHeight));
                 make.center.equalTo([self findTopViewController].view);
             }];
 
             [[self findTopViewController].view addSubview:self];
-            [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            [self mas_remakeConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
                     make.width.equalTo(@(ScreenWidth - 34 * 2));
                 } else {
