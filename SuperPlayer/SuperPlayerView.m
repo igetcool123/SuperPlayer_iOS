@@ -551,7 +551,7 @@ static UISlider * _volumeSlider;
         [[self findTopViewController].view addSubview:self];
         [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (IsIPhoneX) {
-                make.width.equalTo(@(ScreenWidth - 95));
+                make.width.equalTo(@(ScreenWidth - 68));
             } else {
                 make.width.equalTo(@(ScreenWidth));
             }
@@ -589,7 +589,7 @@ static UISlider * _volumeSlider;
             [[self findTopViewController].view addSubview:self];
             [self mas_remakeConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - 95));
+                    make.width.equalTo(@(ScreenWidth - 68));
                 } else {
                     make.width.equalTo(@(ScreenWidth));
                 }
@@ -848,9 +848,14 @@ static UISlider * _volumeSlider;
     SuperPlayerLayoutStyle style = [self defaultStyleForDeviceOrientation:[UIDevice currentDevice].orientation];
 
     BOOL shouldFullScreen = UIDeviceOrientationIsLandscape(orientation);
-    [self _switchToFullScreen:shouldFullScreen];
+//    [self _switchToFullScreen:shouldFullScreen];
     [self _adjustTransform:[self _orientationForFullScreen:shouldFullScreen]];
-    [self _switchToLayoutStyle:style];
+//    [self _switchToLayoutStyle:style];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf _switchToFullScreen:shouldFullScreen];
+        [weakSelf _switchToLayoutStyle:style];
+    });
 }
 
 #pragma mark -
