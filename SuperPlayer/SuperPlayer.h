@@ -26,7 +26,7 @@
 // 图片路径
 #define SuperPlayerImage(file)              [UIImage imageNamed:[@"SuperPlayer.bundle" stringByAppendingPathComponent:file]]
 
-#define IsIPhoneX                           (ScreenHeight >= 812 || ScreenWidth >= 812)
+#define IsIPhoneX                           SuperPlayer_iPhoneX()//(ScreenHeight >= 812 || ScreenWidth >= 812)
 
 // 小窗单例
 #define SuperPlayerWindowShared             [SuperPlayerWindow sharedInstance]
@@ -34,3 +34,16 @@
 #define TintColor RGBA(252, 89, 81, 1)
 
 #define LOG_ME NSLog(@"%s", __func__);
+
+static inline BOOL SuperPlayer_iPhoneX() {
+    static BOOL iPhoneX = NO;
+    if (@available(iOS 11.0, *)) {
+        iPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom > 0.0;
+    } else {
+        iPhoneX = NO;
+    }
+    if ([UIDevice.currentDevice.model isEqualToString: @"iPad"]) {
+        iPhoneX = NO;
+    }
+    return iPhoneX;
+}
