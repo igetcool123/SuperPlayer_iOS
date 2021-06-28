@@ -577,25 +577,26 @@ static UISlider * _volumeSlider;
         // 这个地方加判断是为了从全屏的一侧,直接到全屏的另一侧不用修改限制,否则会出错;
         if (_layoutStyle != SuperPlayerLayoutStyleFullScreen)  { //UIInterfaceOrientationIsPortrait(currentOrientation)) {
             [self removeFromSuperview];
-            NSLog(@"%@",[self findTopViewController]);
-
             [[self findTopViewController].view addSubview:_fullScreenBlackView];
-            [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.width.equalTo(@(ScreenWidth));
-                make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([self findTopViewController].view);
-            }];
-
             [[self findTopViewController].view addSubview:self];
-            [self mas_remakeConstraints:^(MASConstraintMaker *make) {
-                if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - 68));
-                } else {
+            __weak typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.width.equalTo(@(ScreenWidth));
-                }
-                make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([self findTopViewController].view);
-            }];
+                    make.height.equalTo(@(ScreenHeight));
+                    make.center.equalTo([weakSelf findTopViewController].view);
+                }];
+                [weakSelf mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    if (IsIPhoneX) {
+                        make.width.equalTo(@(ScreenWidth - 68));
+                    } else {
+                        make.width.equalTo(@(ScreenWidth));
+                    }
+                    make.height.equalTo(@(ScreenHeight));
+                    make.center.equalTo([weakSelf findTopViewController].view);
+                }];
+            });
+            
         }
     } else {
         [_fullScreenBlackView removeFromSuperview];
@@ -848,14 +849,9 @@ static UISlider * _volumeSlider;
     SuperPlayerLayoutStyle style = [self defaultStyleForDeviceOrientation:[UIDevice currentDevice].orientation];
 
     BOOL shouldFullScreen = UIDeviceOrientationIsLandscape(orientation);
-//    [self _switchToFullScreen:shouldFullScreen];
+    [self _switchToFullScreen:shouldFullScreen];
     [self _adjustTransform:[self _orientationForFullScreen:shouldFullScreen]];
-//    [self _switchToLayoutStyle:style];
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf _switchToFullScreen:shouldFullScreen];
-        [weakSelf _switchToLayoutStyle:style];
-    });
+    [self _switchToLayoutStyle:style];
 }
 
 #pragma mark -
