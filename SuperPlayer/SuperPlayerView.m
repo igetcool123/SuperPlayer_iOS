@@ -542,22 +542,24 @@ static UISlider * _volumeSlider;
         [self removeFromSuperview];
         
         [[self findTopViewController].view addSubview:_fullScreenBlackView];
-        [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(@(ScreenWidth));
-            make.height.equalTo(@(ScreenHeight));
-            make.center.equalTo([self findTopViewController].view);
-        }];
-
         [[self findTopViewController].view addSubview:self];
-        [self mas_remakeConstraints:^(MASConstraintMaker *make) {
-            if (IsIPhoneX) {
-                make.width.equalTo(@(ScreenWidth - 68));
-            } else {
+        __weak typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.width.equalTo(@(ScreenWidth));
-            }
-            make.height.equalTo(@(ScreenHeight));
-            make.center.equalTo([self findTopViewController].view);
-        }];
+                make.height.equalTo(@(ScreenHeight));
+                make.center.equalTo([weakSelf findTopViewController].view);
+            }];
+            [weakSelf mas_remakeConstraints:^(MASConstraintMaker *make) {
+                if (IsIPhoneX) {
+                    make.width.equalTo(@(ScreenWidth - 68));
+                } else {
+                    make.width.equalTo(@(ScreenWidth));
+                }
+                make.height.equalTo(@(ScreenHeight));
+                make.center.equalTo([weakSelf findTopViewController].view);
+            }];
+        });
         [self.superview setNeedsLayout];
     } else {
         [_fullScreenBlackView removeFromSuperview];
