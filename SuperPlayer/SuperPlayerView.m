@@ -542,24 +542,22 @@ static UISlider * _volumeSlider;
         [self removeFromSuperview];
         
         [[self findTopViewController].view addSubview:_fullScreenBlackView];
+        [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@(ScreenWidth));
+            make.height.equalTo(@(ScreenHeight));
+            make.center.equalTo([self findTopViewController].view);
+        }];
+        
         [[self findTopViewController].view addSubview:self];
-        __weak typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self mas_remakeConstraints:^(MASConstraintMaker *make) {
+            if (IsIPhoneX) {
+                make.width.equalTo(@(ScreenWidth - 68));
+            } else {
                 make.width.equalTo(@(ScreenWidth));
-                make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([weakSelf findTopViewController].view);
-            }];
-            [weakSelf mas_remakeConstraints:^(MASConstraintMaker *make) {
-                if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenWidth - 68));
-                } else {
-                    make.width.equalTo(@(ScreenWidth));
-                }
-                make.height.equalTo(@(ScreenHeight));
-                make.center.equalTo([weakSelf findTopViewController].view);
-            }];
-        });
+            }
+            make.height.equalTo(@(ScreenHeight));
+            make.center.equalTo([self findTopViewController].view);
+        }];
         [self.superview setNeedsLayout];
     } else {
         [_fullScreenBlackView removeFromSuperview];
@@ -581,24 +579,24 @@ static UISlider * _volumeSlider;
             [self removeFromSuperview];
             [[self findTopViewController].view addSubview:_fullScreenBlackView];
             [[self findTopViewController].view addSubview:self];
-            __weak typeof(self) weakSelf = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//            __weak typeof(self) weakSelf = self;
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//
+//            });
+            [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.width.equalTo(@(ScreenWidth));
+                make.height.equalTo(@(ScreenHeight));
+                make.center.equalTo([self findTopViewController].view);
+            }];
+            [self mas_remakeConstraints:^(MASConstraintMaker *make) {
+                if (IsIPhoneX) {
+                    make.width.equalTo(@(ScreenWidth - 68));
+                } else {
                     make.width.equalTo(@(ScreenWidth));
-                    make.height.equalTo(@(ScreenHeight));
-                    make.center.equalTo([weakSelf findTopViewController].view);
-                }];
-                [weakSelf mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    if (IsIPhoneX) {
-                        make.width.equalTo(@(ScreenWidth - 68));
-                    } else {
-                        make.width.equalTo(@(ScreenWidth));
-                    }
-                    make.height.equalTo(@(ScreenHeight));
-                    make.center.equalTo([weakSelf findTopViewController].view);
-                }];
-            });
-            
+                }
+                make.height.equalTo(@(ScreenHeight));
+                make.center.equalTo([self findTopViewController].view);
+            }];
         }
     } else {
         [_fullScreenBlackView removeFromSuperview];
@@ -809,15 +807,15 @@ static UISlider * _volumeSlider;
 
 // 状态条变化通知（在前台播放才去处理）
 - (void)onStatusBarOrientationChange {
-    [self onDeviceOrientationChange];
-    return;
+//    [self onDeviceOrientationChange];
+//    return;
     if (!self.didEnterBackground) {
         UIInterfaceOrientation orientation = (UIInterfaceOrientation)[UIDevice currentDevice].orientation;
         SuperPlayerLayoutStyle style = [self defaultStyleForDeviceOrientation:orientation];
 //        [[UIApplication sharedApplication] setStatusBarOrientation:orientation animated:NO];
-        if ([UIApplication sharedApplication].statusBarOrientation != orientation) {
-            [self _adjustTransform:(UIInterfaceOrientation)[UIDevice currentDevice].orientation];
-        }
+//        if ([UIApplication sharedApplication].statusBarOrientation != orientation) {
+//            [self _adjustTransform:(UIInterfaceOrientation)[UIDevice currentDevice].orientation];
+//        }
         [self _switchToFullScreen:style == SuperPlayerLayoutStyleFullScreen];
         [self _switchToLayoutStyle:style];
  /*       // 获取到当前状态条的方向
