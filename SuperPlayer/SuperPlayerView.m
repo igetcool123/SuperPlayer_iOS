@@ -653,7 +653,8 @@ static UISlider * _volumeSlider;
     } else if (orientation == UIInterfaceOrientationLandscapeLeft){
         return CGAffineTransformMakeRotation(-M_PI_2);
     } else if(orientation == UIInterfaceOrientationLandscapeRight){
-        return CGAffineTransformMakeRotation(M_PI_2);
+//        return CGAffineTransformMakeRotation(M_PI_2);
+        return CGAffineTransformIdentity;
     }
     return CGAffineTransformIdentity;
 }
