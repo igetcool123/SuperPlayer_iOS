@@ -806,15 +806,15 @@ static UISlider * _volumeSlider;
 
 // 状态条变化通知（在前台播放才去处理）
 - (void)onStatusBarOrientationChange {
-//    [self onDeviceOrientationChange];
-//    return;
+    [self onDeviceOrientationChange];
+    return;
     if (!self.didEnterBackground) {
         UIInterfaceOrientation orientation = (UIInterfaceOrientation)[UIDevice currentDevice].orientation;
         SuperPlayerLayoutStyle style = [self defaultStyleForDeviceOrientation:orientation];
 //        [[UIApplication sharedApplication] setStatusBarOrientation:orientation animated:NO];
-//        if ([UIApplication sharedApplication].statusBarOrientation != orientation) {
-//            [self _adjustTransform:(UIInterfaceOrientation)[UIDevice currentDevice].orientation];
-//        }
+        if ([UIApplication sharedApplication].statusBarOrientation != orientation) {
+            [self _adjustTransform:(UIInterfaceOrientation)[UIDevice currentDevice].orientation];
+        }
         [self _switchToFullScreen:style == SuperPlayerLayoutStyleFullScreen];
         [self _switchToLayoutStyle:style];
  /*       // 获取到当前状态条的方向
