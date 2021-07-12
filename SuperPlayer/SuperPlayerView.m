@@ -758,10 +758,11 @@ static UISlider * _volumeSlider;
     self.state = StateStopped;
     self.playDidEnd = YES;
     // 播放结束隐藏
-    if (SuperPlayerWindowShared.isShowing) {
-        [SuperPlayerWindowShared hide];
-        [self resetPlayer];
-    }
+//    if (SuperPlayerWindowShared.isShowing) {
+//        [SuperPlayerWindowShared hide];
+//        [self resetPlayer];
+//    }
+    [self resetPlayer];
     [self.controlView fadeOut:0.2];
     [self fastViewUnavaliable];
     [self.netWatcher stopWatch];
@@ -841,7 +842,7 @@ static UISlider * _volumeSlider;
     if (!self.isLoaded) { return; }
     if (self.isLockScreen) { return; }
     if (self.didEnterBackground) { return; };
-    if (SuperPlayerWindowShared.isShowing) { return; }
+//    if (SuperPlayerWindowShared.isShowing) { return; }
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (orientation == UIDeviceOrientationFaceUp) {
         return;
