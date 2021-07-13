@@ -758,11 +758,10 @@ static UISlider * _volumeSlider;
     self.state = StateStopped;
     self.playDidEnd = YES;
     // 播放结束隐藏
-//    if (SuperPlayerWindowShared.isShowing) {
-//        [SuperPlayerWindowShared hide];
-//        [self resetPlayer];
-//    }
-    [self resetPlayer];
+    if (SuperPlayerWindowShared.isShowing) {
+        [SuperPlayerWindowShared hide];
+        [self resetPlayer];
+    }
     [self.controlView fadeOut:0.2];
     [self fastViewUnavaliable];
     [self.netWatcher stopWatch];
